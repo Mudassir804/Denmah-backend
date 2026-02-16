@@ -3,6 +3,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session, joinedload, aliased # 🎯 FIX: Explicitly importing aliased here
 from sqlalchemy import func, cast, String, select
 from typing import List, Optional, Dict, Any
+from email_utils import send_contact_form_email
 from fastapi.middleware.cors import CORSMiddleware
 import os
 import shutil
@@ -13,7 +14,7 @@ from datetime import datetime
 import models, schemas
 from database import SessionLocal, engine, get_db
 from email_utils import send_email # Assuming this utility exists
-from schemas import OrderOut, OrderItemOut, OrderSubmissionRequest, EmailRequest # Ensuring user's explicit imports are covered
+from schemas import OrderOut, OrderItemOut, OrderSubmissionRequest
 
 # Create the database tables
 models.Base.metadata.create_all(bind=engine)
@@ -37,14 +38,24 @@ UPLOAD_DIRECTORY = "static/images"
 
 # --- EXISTING ENDPOINTS ---
 
-@app.post("/send-email/")
-async def send_email_endpoint(email: EmailRequest):
-    """API endpoint to send an email"""
-    result = send_email(email.to, email.subject, email.body)
+@app.post("/contact-us/")
+async def contact_us_endpoint(contact_data: schemas.ContactRequest):
+    """
+    Endpoint for customers to send messages via the footer form.
+    """
+    # Construct a subject line that includes the customer's name
+    full_subject = f"Footer Contact: {contact_data.subject} from {contact_data.customer_name}"
+    
+    result = send_contact_form_email(
+        customer_email=contact_data.customer_email,
+        subject=full_subject,
+        message_body=contact_data.message
+    )
     
     if result["status"] == "error":
         raise HTTPException(status_code=500, detail=result["message"])
-    return result
+    
+    return {"message": "Message received. We will contact you shortly."}
 
 @app.post("/products/", response_model=schemas.ProductOut)
 async def create_product(
@@ -448,17 +459,14 @@ def create_review(product_id: int, review: schemas.ReviewCreate, db: Session = D
     db.refresh(db_review)
     return db_review
 
+
 @app.get("/products/{product_id}/reviews/", response_model=List[schemas.ReviewOut])
-async def read_reviews(product_id: int, db: Session = Depends(get_db)):
+def read_reviews(product_id: int, db: Session = Depends(get_db)):
     """
     Get all reviews for a specific product, sorted by newest first.
     """
-    if db is None:
-        raise HTTPException(status_code=500, detail="Database connection failed")
-    
     reviews = db.query(models.Review)\
         .filter(models.Review.product_id == product_id)\
         .order_by(models.Review.created_at.desc())\
         .all()
-        
     return reviews

@@ -4,10 +4,11 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 
-class EmailRequest(BaseModel):
-    to: EmailStr
-    subject: str
-    body: str
+class ContactRequest(BaseModel):
+    customer_email: EmailStr
+    subject: str = "General Inquiry" # Default subject if not provided
+    message: str
+    customer_name: str 
 
 
 
