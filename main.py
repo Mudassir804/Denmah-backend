@@ -355,7 +355,52 @@ def delete_blog_post(post_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Post not found")
     db.delete(post); db.commit()
     return
+@app.put("/blog/posts/{post_id}", response_model=schemas.BlogPostOut)
+def update_blog_post(
+    post_id: int,
+    title: str = Form(...),
+    description: str = Form(...),
+    content: str = Form(...),
+    category: str = Form(...),
+    author: str = Form(...),
+    tags: str = Form(...),
+    is_published: str = Form(...), # Accept as string to avoid 422
+    image: Optional[UploadFile] = File(None),
+    db: Session = Depends(get_db)
+):
+    db_post = db.query(models.BlogPost).filter(models.BlogPost.id == post_id).first()
+    if not db_post:
+        raise HTTPException(status_code=404, detail="Post not found")
 
+    # Handle Category
+    db_category = db.query(models.BlogCategory).filter(models.BlogCategory.name == category).first()
+    if not db_category:
+        db_category = models.BlogCategory(name=category)
+        db.add(db_category); db.commit(); db.refresh(db_category)
+
+    # Convert is_published string to boolean
+    published_bool = is_published.lower() == "true"
+
+    # Update fields
+    db_post.title = title
+    db_post.excerpt = description
+    db_post.content = content
+    db_post.author = author
+    db_post.tags = tags
+    db_post.category_id = db_category.id
+    db_post.is_published = published_bool # If your model has this column
+
+    if image:
+        file_extension = os.path.splitext(image.filename)[1]
+        unique_filename = f"blog_{uuid.uuid4()}{file_extension}"
+        file_path = os.path.join("static/images", unique_filename)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+        db_post.image_url = f"/static/images/{unique_filename}"
+
+    db.commit()
+    db.refresh(db_post)
+    return db_post
 
 # ==========================================
 # ⭐ PRODUCT REVIEWS
