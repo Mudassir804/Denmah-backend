@@ -378,3 +378,4 @@ def read_reviews(product_id: int, db: Session = Depends(get_db)):
         .filter(models.Review.product_id == product_id)\
         .order_by(models.Review.created_at.desc())\
         .all()
+

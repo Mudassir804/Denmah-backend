@@ -1,7 +1,7 @@
-[project]
+﻿[project]
 name = "wholesale-backend"
 version = "0.1.0"
-description = "Add your description here"
+description = "Wholesale Backend"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -11,4 +11,6 @@ dependencies = [
     "python-multipart>=0.0.20",
     "sqlalchemy<2.0",
     "uvicorn>=0.38.0",
+    "passlib[bcrypt]>=1.7.4",
+    "bcrypt>=4.0.1"
 ]

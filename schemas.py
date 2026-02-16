@@ -10,7 +10,15 @@ class ContactRequest(BaseModel):
     message: str
     customer_name: str 
 
+class AdminLogin(BaseModel):
+    email: EmailStr
+    password: str
 
+class AdminOut(BaseModel):
+    email: EmailStr
+
+    class Config:
+        from_attributes = True
 
 # Product schemas
 
