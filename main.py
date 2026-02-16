@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, cast, String, select
@@ -15,6 +15,7 @@ import models
 import schemas
 from database import SessionLocal, engine, get_db
 from email_utils import send_contact_form_email, send_email
+from security import PasswordUtils
 
 # --- DATABASE INITIALIZATION ---
 models.Base.metadata.create_all(bind=engine)
@@ -379,3 +380,19 @@ def read_reviews(product_id: int, db: Session = Depends(get_db)):
         .order_by(models.Review.created_at.desc())\
         .all()
 
+
+@app.post("/admin/login/")
+def admin_login(login_data: schemas.AdminLogin, db: Session = Depends(get_db)):
+    admin = db.query(models.Admin).filter(models.Admin.email == login_data.email).first()
+    
+    if not admin or not PasswordUtils.verify_password(login_data.password, admin.hashed_password):
+        raise HTTPException(status_code=401, detail="Incorrect email or password")
+    
+    # Generate the actual token
+    token = create_access_token(data={"sub": admin.email})
+    
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "email": admin.email
+    }
