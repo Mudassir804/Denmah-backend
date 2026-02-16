@@ -15,7 +15,8 @@ import models
 import schemas
 from database import SessionLocal, engine, get_db
 from email_utils import send_contact_form_email, send_email
-from security import PasswordUtils
+from security import PasswordUtils, create_access_token
+
 
 # --- DATABASE INITIALIZATION ---
 models.Base.metadata.create_all(bind=engine)
@@ -380,6 +381,12 @@ def read_reviews(product_id: int, db: Session = Depends(get_db)):
         .order_by(models.Review.created_at.desc())\
         .all()
 
+
+
+
+# ==========================================
+# ⭐ Admin Login
+# ==========================================
 
 @app.post("/admin/login/")
 def admin_login(login_data: schemas.AdminLogin, db: Session = Depends(get_db)):

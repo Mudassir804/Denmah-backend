@@ -28,8 +28,20 @@ class PasswordUtils:
             return False
         
 
+SECRET_KEY = os.getenv("SECRET_KEY", "your_super_secret_key_change_me")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+# Default to 1440 minutes (24 hours) if the env variable is missing
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 1440))
+
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=os.getenv(ACCESS_TOKEN_EXPIRE_MINUTES))
+    
+    # ✅ FIX: Convert the environment variable to an integer
+    minutes = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 1440))
+    
+    expire = datetime.utcnow() + timedelta(minutes=minutes)
+    
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, os.getenv(SECRET_KEY), algorithm=os.getenv(ALGORITHM))
+    
+    # ✅ FIX: Ensure SECRET_KEY and ALGORITHM are strings
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
