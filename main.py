@@ -25,7 +25,7 @@ app = FastAPI(title="Denmah Backend API")
 
 # --- CONFIGURATION & MIDDLEWARE ---
 origins = [
-    "http://localhost:5173",  # React Vite default port
+     "https://denmahcraft.com",  # React Vite default port
 ]
 
 app.add_middleware(
