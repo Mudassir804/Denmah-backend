@@ -1,14 +1,15 @@
-fastapi==0.116.1
-uvicorn==0.35.0
-pydantic==2.11.7
-sqlalchemy==2.0.43
-python-dotenv==1.1.1
-requests==2.32.5
+# Web Framework & Server
+fastapi==0.115.11
+uvicorn[standard]==0.34.0
+pydantic>=2.10.0,<3.0.0
+sqlalchemy==2.0.38
+python-dotenv==1.0.1
+requests==2.32.3
 
-# AI (minimal)
-openai==1.99.5
-langchain==0.3.27
-embedchain==0.0.73
+# AI & LLM (Stable ranges for 2026)
+openai>=1.50.0
+langchain>=0.3.0
+embedchain>=0.1.0
 
-# optional
-bcrypt==4.3.0
+# Security
+bcrypt==4.2.1
