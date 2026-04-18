@@ -1,18 +1,21 @@
 # Web Framework & Server
 fastapi==0.115.11
 uvicorn[standard]==0.34.0
-pydantic>=2.10.0,<3.0.0
+pydantic==2.10.5
+pydantic-core==2.27.2
 sqlalchemy==2.0.38
 python-dotenv==1.0.1
 requests==2.32.3
 
-# Crucial fix for the 'cython_sources' error
+# Build Fixes
 PyYAML==6.0.1
 
-# AI & LLM 
-openai>=1.50.0
-langchain>=0.3.0
-embedchain>=0.1.0
+# AI Stack (Pinned to prevent 'resolution-too-deep' errors)
+openai==1.50.0
+langchain==0.3.0
+langchain-community==0.3.0
+langchain-core==0.3.0
+embedchain==0.1.117
 
 # Security
 bcrypt==4.2.1
