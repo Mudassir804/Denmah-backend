@@ -6,7 +6,10 @@ sqlalchemy==2.0.38
 python-dotenv==1.0.1
 requests==2.32.3
 
-# AI & LLM (Stable ranges for 2026)
+# Crucial fix for the 'cython_sources' error
+PyYAML==6.0.1
+
+# AI & LLM 
 openai>=1.50.0
 langchain>=0.3.0
 embedchain>=0.1.0
