@@ -9,6 +9,7 @@ pydantic-core==2.27.2
 sqlalchemy==2.0.38
 python-dotenv==1.0.1
 requests==2.32.3
+email-validator==2.1.0
 
 # Build Fixes
 PyYAML==6.0.1
