@@ -1,32 +1,21 @@
-# SOLUTION: Remove embedchain (causes Python version conflicts)
-# Use LangChain directly instead - FULLY COMPATIBLE WITH PYTHON 3.12.7
-
-# Web Framework & Server
 fastapi==0.115.11
 uvicorn[standard]==0.34.0
+sqlalchemy==2.0.38
 pydantic==2.10.5
 pydantic-core==2.27.2
-sqlalchemy==2.0.38
-python-dotenv==1.0.1
-requests==2.32.3
 email-validator==2.1.0
 python-jose==3.3.0
-
-# Build Fixes
-PyYAML==6.0.1
-
-# AI Stack - UPDATED FOR PYTHON 3.12.7 COMPATIBILITY
-# Removed: embedchain==0.1.117 (causes Python 3.12 conflicts)
-# Using: Latest LangChain that works with Python 3.12
+python-dotenv==1.0.1
+requests==2.32.3
+python-multipart==0.0.6
+aiohttp==3.9.1
+bcrypt==4.2.1
+cryptography==42.0.5
+passlib==1.7.4
 openai==1.50.0
 langchain==0.2.17
 langchain-community==0.2.19
 langchain-core==0.2.43
-
-# Security
-bcrypt==4.2.1
-
-# Additional dependencies
-aiohttp==3.9.1
+PyYAML==6.0.1
 google-api-python-client==2.114.0
 google-auth==2.31.0
